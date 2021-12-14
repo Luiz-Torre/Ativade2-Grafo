@@ -89,6 +89,17 @@ void excluirAresta(lista **g, int aux, int aux_dest){
     puts("O valor não se encontra em nenhum no");
 }
 
+int existe(int *vet, int valor, int n){
+    int i;
+    for(i =0; i< n;i++){
+        if(vet[i] == valor){
+            return 1;
+        }
+    }
+    return 0;
+}
+
+
 void TestaCompleta(lista **g,int tam){
     int vetE[tam+1];
     int vetS[tam+1];
@@ -125,9 +136,29 @@ void limpa(lista **g, int tam){
   }
   free(g);
 }
+
+void calcTodosCaminhos(lista **g, int *vet, int b, int pos) {
+  if (vet[pos-1] == b) {
+    puts("");
+    for (int i = 0; i < pos; i++)
+      printf("%d ", vet[i]);
+  }
+  else {
+    lista *p = g[ vet[pos-1] ];
+    while (p) {
+      if (! existe(vet, p->destino, pos)) {
+        vet[pos] = p->destino;
+        calcTodosCaminhos(g, vet, b, pos+1);
+      }
+      p = p->prox;
+    }
+  }
+}
+
 int main(){
     int var, tam;
-    int origem_caminho, destino_caminho;
+    int destino_caminho;
+    int origem_caminho[1];
     int origem, destino, custo, aux, aux_dest;
     lista **g;
     puts("Informe quantos nós terá seu grafo: \n");
@@ -168,25 +199,25 @@ int main(){
                 break;
             case 6:
                 puts("Informe a origem");
-                scanf("%d", &origem_caminho);
+                scanf("%d", origem_caminho);
                 puts("Informe o destino");
                 scanf("%d", &destino_caminho);
-                calcTodosCaminhos(g, origem_caminho, destino_caminho);
+                calcTodosCaminhos(g, origem_caminho, destino_caminho, 1);
                 break;
-            case 7:
-                puts("Informe a origem");
-                scanf("%d", &origem_caminho);
-                puts("Informe o destino");
-                scanf("%d", &destino_caminho);
-                CaminhoCurto(g, origem_caminho, destino_caminho);
-                break;
-            case 8:
-                puts("Informe a origem");
-                scanf("%d", &origem_caminho);
-                puts("Informe o destino");
-                scanf("%d", &destino_caminho);
-                CaminhoMenorCusto(g, origem_caminho, destino_caminho);
-                break;
+            // case 7:
+            //     puts("Informe a origem");
+            //     scanf("%d", &origem_caminho);
+            //     puts("Informe o destino");
+            //     scanf("%d", &destino_caminho);
+            //     CaminhoCurto(g, origem_caminho, destino_caminho);
+            //     break;
+            // case 8:
+            //     puts("Informe a origem");
+            //     scanf("%d", &origem_caminho);
+            //     puts("Informe o destino");
+            //     scanf("%d", &destino_caminho);
+            //     CaminhoMenorCusto(g, origem_caminho, destino_caminho);
+            //     break;
             case 9:
                 limpa(g, tam);
                 exit(0);
@@ -195,7 +226,7 @@ int main(){
                 printf("\nValor Invalido");
                 break;
         }
-        printf("\nInforme: \n 1- Inserir Aresta\n 2- Remover uma aresta\n 3- Imprimir grafo\n 4- Imprimir os graus de entrada e saída de um vértice\n 5- Verificar se um grafo é completo\n 6- Sair\n");
+        printf("\nInforme: \n 1- Inserir Aresta\n 2- Remover uma aresta\n 3- Imprimir grafo\n 4- Imprimir os graus de entrada e saída de um vértice\n 5- Verificar se um grafo é completo\n 6- Para imprimir todos os caminhos entre uma origem e seu destino\n7- Imprimir o caminho mais curto( com o menor número de arestras)\n8-Imprimir o caminho de menor custo( menor soma dos custos das arestas )\n9 - Sair\n");
         scanf("%d", &var);
     }
     return 0;
