@@ -136,16 +136,24 @@ void limpa(lista **g, int tam){
   }
   free(g);
 }
-
+int medeTamanho(int menor, int novoValor){
+    if (novoValor < menor && novoValor>0){
+        return novoValor;
+    }
+    else{
+        return menor;
+    }
+}
 void calcTodosCaminhos(lista **g, int *vet, int b, int pos) {
   if (vet[pos-1] == b) {
+      int i;
     puts("");
-    for (int i = 0; i < pos; i++)
+    for (i = 0; i < pos; i++)
       printf("%d ", vet[i]);
   }
   else {
     lista *p = g[ vet[pos-1] ];
-    while (p) {
+    while (p!=NULL) {
       if (! existe(vet, p->destino, pos)) {
         vet[pos] = p->destino;
         calcTodosCaminhos(g, vet, b, pos+1);
@@ -155,15 +163,61 @@ void calcTodosCaminhos(lista **g, int *vet, int b, int pos) {
   }
 }
 
+void MenorCaminho(lista **g, int *vet, int b, int pos,int menor) {
+    if ( vet[pos-1] == b && pos ==menor) {
+        int i;
+        puts("");
+        for (i = 0; i < pos; i++)
+            printf("%d ", vet[i]);
+    }
+    else {
+        lista *p = g[ vet[pos-1] ];
+        while (p!=NULL) {
+            if (! existe(vet, p->destino, pos)) {
+                vet[pos] = p->destino;
+                MenorCaminho(g, vet, b, pos+1,menor);
+            }
+            p = p->prox;
+        }
+    }
+}
+
+int  CaminhoCurto(lista **g, int *vet, int b, int pos,int *vet2,int menor,int menorValor) {
+    if (vet[pos-1] == b) {
+        menor = medeTamanho(menor,pos);
+    }
+    else {
+        lista *p = g[ vet[pos-1] ];
+        while (p!=NULL){
+            if (! existe(vet, p->destino, pos)) {
+                vet[pos] = p->destino;
+                menor = CaminhoCurto(g, vet, b, pos+1,vet2,menor,menorValor);
+            }
+            p = p->prox;
+        }
+    }
+    return menor;
+}
+
 int main(){
     int var, tam;
+    int pos = 1;
+    int menor = 1000;
     int destino_caminho;
-    int origem_caminho[1];
+    int *origem_caminho;
+    int *custo_caminho;
+    int *num_caminho;
     int origem, destino, custo, aux, aux_dest;
     lista **g;
     puts("Informe quantos nós terá seu grafo: \n");
     scanf("%d", &tam);
 
+    num_caminho = (int*) malloc(tam*sizeof(int));
+    for (int i = 0; i < sizeof num_caminho; ++i) {
+        num_caminho[i] = 0;
+    }
+    origem_caminho = (int*) malloc(tam*sizeof(int));
+    custo_caminho = (int*) malloc(tam*sizeof(int));
     g = (lista**)malloc((tam+1)*sizeof(lista*));
     inicializar(g, tam);
     printf("Informe: \n 1- Inserir Aresta\n 2- Remover uma aresta\n 3- Imprimir grafo\n 4- Imprimir os graus de entrada e saída de um vértice\n 5- Verificar se um grafo é completo\n 6- Para imprimir todos os caminhos entre uma origem e seu destino\n7- Imprimir o caminho mais curto( com o menor número de arestras)\n8-Imprimir o caminho de menor custo( menor soma dos custos das arestas )\n9 - Sair ");
@@ -199,18 +253,22 @@ int main(){
                 break;
             case 6:
                 puts("Informe a origem");
-                scanf("%d", origem_caminho);
+                scanf("%d", &origem);
+                origem_caminho[0] = origem;
                 puts("Informe o destino");
                 scanf("%d", &destino_caminho);
                 calcTodosCaminhos(g, origem_caminho, destino_caminho, 1);
                 break;
-            // case 7:
-            //     puts("Informe a origem");
-            //     scanf("%d", &origem_caminho);
-            //     puts("Informe o destino");
-            //     scanf("%d", &destino_caminho);
-            //     CaminhoCurto(g, origem_caminho, destino_caminho);
-            //     break;
+             case 7:
+                 puts("Informe a origem");
+                 scanf("%d", &origem);
+                 origem_caminho[0] = origem;
+                 puts("Informe o destino");
+                 scanf("%d", &destino_caminho);
+                 menor = CaminhoCurto(g, origem_caminho, destino_caminho,1,num_caminho,menor,0);
+                 MenorCaminho(g, origem_caminho, destino_caminho, pos,menor);
+
+                 break;
             // case 8:
             //     puts("Informe a origem");
             //     scanf("%d", &origem_caminho);
