@@ -210,16 +210,19 @@ int  CaminhoCurto(lista **g, int *vet, int b, int pos,int *vet2,int menor,int me
 int  CaminhoMenorCusto(lista **g, int *vet, int b, int pos,int *vet2,int menor,int menorValor) {
     if (vet[pos-1] == b) {
         menor = medeCusto(menor,menorValor);
-        menorValor = 0;
-//        printf("%d",menor);
+//        printf("%d\n",menorValor);
+//        printf("%d\n",menor);
+
     }
     else {
+        menorValor = 0;
         lista *p = g[ vet[pos-1] ];
         while (p!=NULL){
             if (! existe(vet, p->destino, pos)) {
                 vet[pos] = p->destino;
                 menorValor += p->custo;
                 menor = CaminhoMenorCusto(g, vet, b, pos+1,vet2,menor,menorValor);
+
             }
             p = p->prox;
         }
