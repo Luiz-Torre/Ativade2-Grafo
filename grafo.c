@@ -244,15 +244,15 @@ int main(){
     lista **g;
     puts("Informe quantos nós terá seu grafo: \n");
     scanf("%d", &tam);
+    g = (lista**)malloc((tam+1)*sizeof(lista*));
 
     num_caminho = (int*) malloc(tam*sizeof(int));
 
-    for (int i = 0; i < tam; ++i) {
+    for (int i = 0; i < tam; i++) {
         num_caminho[i] = 0;
     }
     origem_caminho = (int*) malloc(tam*sizeof(int));
     custo_caminho = (int*) malloc(tam*sizeof(int));
-    g = (lista**)malloc((tam+1)*sizeof(lista*));
     inicializar(g, tam);
     printf("Informe: \n 1- Inserir Aresta\n 2- Remover uma aresta\n 3- Imprimir grafo\n 4- Imprimir os graus de entrada e saída de um vértice\n 5- Verificar se um grafo é completo\n 6- Para imprimir todos os caminhos entre uma origem e seu destino\n7- Imprimir o caminho mais curto( com o menor número de arestras)\n8-Imprimir o caminho de menor custo( menor soma dos custos das arestas )\n9 - Sair ");
 
@@ -325,3 +325,8 @@ int main(){
     }
     return 0;
 }
+
+
+
+
+// 4 1 1 2 5 1 1 3 8 1 1 4 30 1 2 4 18 1 3 4 1
