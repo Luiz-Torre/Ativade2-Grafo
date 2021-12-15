@@ -144,6 +144,14 @@ int medeTamanho(int menor, int novoValor){
         return menor;
     }
 }
+int medeCusto(int menor, int novoValor){
+    if (novoValor < menor && novoValor>0){
+        return novoValor;
+    }
+    else{
+        return menor;
+    }
+}
 void calcTodosCaminhos(lista **g, int *vet, int b, int pos) {
   if (vet[pos-1] == b) {
       int i;
@@ -199,15 +207,36 @@ int  CaminhoCurto(lista **g, int *vet, int b, int pos,int *vet2,int menor,int me
     return menor;
 }
 
+int  CaminhoMenorCusto(lista **g, int *vet, int b, int pos,int *vet2,int menor,int menorValor) {
+    if (vet[pos-1] == b) {
+        menor = medeCusto(menor,menorValor);
+        menorValor = 0;
+//        printf("%d",menor);
+    }
+    else {
+        lista *p = g[ vet[pos-1] ];
+        while (p!=NULL){
+            if (! existe(vet, p->destino, pos)) {
+                vet[pos] = p->destino;
+                menorValor += p->custo;
+                menor = CaminhoMenorCusto(g, vet, b, pos+1,vet2,menor,menorValor);
+            }
+            p = p->prox;
+        }
+    }
+    return menor;
+}
+
 int main(){
     int var, tam;
     int pos = 1;
     int menor = 1000;
+    int custo = 1000;
     int destino_caminho;
     int *origem_caminho;
     int *custo_caminho;
     int *num_caminho;
-    int origem, destino, custo, aux, aux_dest;
+    int origem, destino, aux, aux_dest;
     lista **g;
     puts("Informe quantos nós terá seu grafo: \n");
     scanf("%d", &tam);
@@ -269,13 +298,15 @@ int main(){
                  MenorCaminho(g, origem_caminho, destino_caminho, pos,menor);
 
                  break;
-            // case 8:
-            //     puts("Informe a origem");
-            //     scanf("%d", &origem_caminho);
-            //     puts("Informe o destino");
-            //     scanf("%d", &destino_caminho);
-            //     CaminhoMenorCusto(g, origem_caminho, destino_caminho);
-            //     break;
+             case 8:
+                 puts("Informe a origem");
+                 scanf("%d", &origem);
+                 origem_caminho[0] = origem;
+                 puts("Informe o destino");
+                 scanf("%d", &destino_caminho);
+                 custo = CaminhoMenorCusto(g, origem_caminho, destino_caminho,pos,num_caminho,menor,custo);
+                 printf("%d",custo);
+                 break;
             case 9:
                 limpa(g, tam);
                 exit(0);
