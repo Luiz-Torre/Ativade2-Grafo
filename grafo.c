@@ -189,7 +189,32 @@ void MenorCaminho(lista **g, int *vet, int b, int pos,int menor) {
         }
     }
 }
+void PrintaCaminhoMenorCusto(lista **g, int *vet, int b, int pos,int *vet2,int menor,int menorValor) {
+    if ( vet[pos-1] == b) {
+        if (menorValor == menor){
+            int i;
+            puts("");
+            for (i = 0; i < pos; i++)
+                printf("%d ", vet[i]);
+        }
 
+    }
+    else {
+        lista *p = g[ vet[pos-1] ];
+        while (p!=NULL){
+            if (! existe(vet, p->destino, pos)) {
+                vet[pos] = p->destino;
+                if(pos == 1){
+                    menorValor = 0;
+                }
+                menorValor += p->custo;
+                PrintaCaminhoMenorCusto(g, vet, b, pos+1,vet2,menor,menorValor);
+
+            }
+            p = p->prox;
+        }
+    }
+}
 int  CaminhoCurto(lista **g, int *vet, int b, int pos,int *vet2,int menor,int menorValor) {
     if (vet[pos-1] == b) {
         menor = medeTamanho(menor,pos);
@@ -214,7 +239,6 @@ int  CaminhoMenorCusto(lista **g, int *vet, int b, int pos,int *vet2,int menor,i
     }
     else {
         lista *p = g[ vet[pos-1] ];
-
         while (p!=NULL){
             if (! existe(vet, p->destino, pos)) {
                 vet[pos] = p->destino;
@@ -310,7 +334,7 @@ int main(){
                  puts("Informe o destino");
                  scanf("%d", &destino_caminho);
                  custo = CaminhoMenorCusto(g, origem_caminho, destino_caminho,pos,num_caminho,menor,custo);
-                 printf("%d",custo);
+                 PrintaCaminhoMenorCusto(g, origem_caminho, destino_caminho,pos,num_caminho,custo,menor);
                  break;
             case 9:
                 limpa(g, tam);
