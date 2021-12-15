@@ -210,16 +210,17 @@ int  CaminhoCurto(lista **g, int *vet, int b, int pos,int *vet2,int menor,int me
 int  CaminhoMenorCusto(lista **g, int *vet, int b, int pos,int *vet2,int menor,int menorValor) {
     if (vet[pos-1] == b) {
         menor = medeCusto(menor,menorValor);
-//        printf("%d\n",menorValor);
-//        printf("%d\n",menor);
 
     }
     else {
-        menorValor = 0;
         lista *p = g[ vet[pos-1] ];
+
         while (p!=NULL){
             if (! existe(vet, p->destino, pos)) {
                 vet[pos] = p->destino;
+                if(pos == 1){
+                    menorValor = 0;
+                }
                 menorValor += p->custo;
                 menor = CaminhoMenorCusto(g, vet, b, pos+1,vet2,menor,menorValor);
 
@@ -245,7 +246,8 @@ int main(){
     scanf("%d", &tam);
 
     num_caminho = (int*) malloc(tam*sizeof(int));
-    for (int i = 0; i < sizeof num_caminho; ++i) {
+
+    for (int i = 0; i < tam; ++i) {
         num_caminho[i] = 0;
     }
     origem_caminho = (int*) malloc(tam*sizeof(int));
@@ -264,7 +266,7 @@ int main(){
                 scanf("%d", &destino);
                 puts("Informe qual o custo: \n");
                 scanf("%d", &custo);
-                InserirAresta(g, origem, destino, custo);  
+                InserirAresta(g, origem, destino, custo);
                 break;
             case 2:
                 puts("Informe de qual no de origem que você deseja excluir a arestra");
